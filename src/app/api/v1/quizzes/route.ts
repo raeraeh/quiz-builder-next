@@ -1,22 +1,47 @@
 
 import { NextResponse } from "next/server";
 import { db } from "../../../../../db";
-import { quizzes } from "../../../../../db/schema";
-
-  
+import { quizzes, steps } from "../../../../../db/schema";
+import { eq } from 'drizzle-orm';
+import { Quiz } from '../../../../api/QuizClient'
+import { Step } from '../../../../api/StepClient' 
 
 export async function GET(request: Request) {
-  const result = await db.select().from(quizzes)
+  const rows = db.select({
+    quizzes: quizzes,
+    steps: steps,
+  }).from(quizzes).leftJoin(steps, eq(quizzes.id, steps.quizId)).all();
+
+  type Quiz = typeof quizzes.$inferSelect;
+  type Step = typeof steps.$inferSelect;
+  
+
+  const result = rows.reduce<{ quizzes: Quiz; steps: Step[] }[]>(
+    (acc, row) => {
+      const quizzes = row.quizzes;
+      const steps = row.steps;
+  
+      const existingEntry = acc.find(entry => entry.quizzes.id === quizzes.id);
+  
+      if (existingEntry) {
+        if (steps) {
+          existingEntry.steps.push(steps);
+        }
+      } else {
+        acc.push({ quizzes, steps: steps ? [steps] : [] });
+      }
+  
+      return acc;
+    },
+    []
+  );
+  
+  console.log(result)
   return new NextResponse(JSON.stringify(result))
 }
 
 
 export async function POST(request: Request, response: Response ) {
-  // add new quiz to database
-  console.log(request, response)
-  
-  // const data = await db.insert(quizzes).values({name: `${request.body}`}).returning().onConflictDoNothing()
-  // return new NextResponse(JSON.stringify(response))
 
   try {
     // Log the request information to the server console

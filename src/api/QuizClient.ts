@@ -5,7 +5,7 @@ import { queryClient } from '../lib/QueryClient';
 export interface Quiz {
   id: string;
   name: string;
-  steps: string[]
+  steps?: string[]
 }
 
 interface CreateQuizRequest {
@@ -24,7 +24,6 @@ export const quizRoute = 'quizzes'
 export const  createQuiz = async (request: CreateQuizRequest) => { 
   const data =  {
     name: request.name,
-    // steps: [],
   }
   const res = await api.post<CreateQuizRequest, Quiz>(`/${quizRoute}`, data)
 

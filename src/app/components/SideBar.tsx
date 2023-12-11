@@ -103,7 +103,7 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
         )}
       </Flex>
 
-      {quiz.steps.map((stepId: string) => (
+      {quiz.steps?.map((stepId: string) => (
         <StepSideBarItem key={stepId} stepId={stepId} quiz={quiz} />
       ))}
     </VStack>

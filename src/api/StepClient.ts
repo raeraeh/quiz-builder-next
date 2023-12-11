@@ -8,9 +8,8 @@ import QuizClient, { quizRoute } from './QuizClient';
 export interface Step {
   id: string;
   name: string;
-  blocks: string[]
+  blocks?: string[]
 }
-
 
 
 interface UpdateStepRequest {
