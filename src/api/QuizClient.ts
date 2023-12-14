@@ -34,14 +34,15 @@ export const  createQuiz = async (request: CreateQuizRequest) => {
 }
 
 export const getQuiz = async (id: string) => {
-  const result = await api.get<Quiz>(`/${quizRoute}/${id}`)
-  return result
+  const res = await api.get<Quiz>(`/${quizRoute}/${id}`)
+  return res
 }
 export const getQuizzes = async () => { 
   return await api.get_all<Quiz>(`/${quizRoute}`)
 }
 
 export const deleteQuiz = async (id: string) => { 
+  console.log('id in client', id)
   const res = await api.delete(`/${quizRoute}/${id}`)
   queryClient.invalidateQueries({queryKey: [quizRoute]})
   return res

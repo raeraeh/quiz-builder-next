@@ -43,6 +43,7 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
   const [isLargerThan1024] = useMediaQuery('(min-width: 1024px)');
 
   const deleteQuiz = (quiz: Quiz) => {
+    console.log('he', quiz.id)
     QuizClient.deleteQuiz(quiz.id);
   };
 
@@ -66,7 +67,8 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
     <VStack align="stretch" spacing={3}>
       <Flex>
         <Button pr={2} colorScheme="teal" variant="link">
-          <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link>
+          {/* <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link> */}
+          <Link href="hello">{quiz.name}</Link>
         </Button>
         <Spacer />
         {isLargerThan1024 ? (
@@ -135,8 +137,8 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
       <Flex align="center">
         <ChevronRightIcon mr={1} />
 
-        <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link>
-
+        {/* <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link> */}
+        <Link href="hello"> {step?.name}</Link>
         <Spacer />
         <IconButton
           colorScheme="teal"

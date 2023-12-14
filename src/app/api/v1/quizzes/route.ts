@@ -6,36 +6,92 @@ import { eq } from 'drizzle-orm';
 import { Quiz } from '../../../../api/QuizClient'
 import { Step } from '../../../../api/StepClient' 
 
+
+//helper methods
+
+// type RowInserterResult<EntityOne extends { id: string }, EntityTwo extends { [key: string]: EntityOne[keyof EntityOne] }> = {
+//   entitiesOne: EntityOne[];
+//   entitiesTwo: { entityId: EntityOne['id']; values: EntityTwo[] }[];
+// };
+
+
+
+// const rowInserter = <
+//   EntityOne extends { id: string; },
+//   EntityTwo extends { [key: string]: EntityOne[keyof EntityOne]; }
+// >(
+//   rows: any[],
+//   tableOne: keyof EntityOne,
+//   tableTwo: keyof EntityTwo
+// ): RowInserterResult<EntityOne, EntityTwo> => {
+//   return rows.reduce(
+//     (acc, row) => {
+//       const tableOneEntry = row[tableOne];
+//       const tableTwoEntry = row[tableTwo];
+
+//       const existingEntry = acc.entitiesOne.find((entry: any) => entry.id === tableOneEntry?.id);
+
+//       if (existingEntry) {
+//         if (tableTwoEntry) {
+//           existingEntry.values.push(tableTwoEntry);
+//         }
+//       } else {
+//         acc.entitiesOne.push(tableOneEntry as EntityOne);
+//         if (tableTwoEntry) {
+//           acc.entitiesTwo.push({ entityId: tableOneEntry?.id, values: [tableTwoEntry] });
+//         }
+//       }
+
+//       return acc;
+//     },
+//     []
+//   );
+// };
+
+
 export async function GET(request: Request) {
   const rows = db.select({
     quizzes: quizzes,
     steps: steps,
   }).from(quizzes).leftJoin(steps, eq(quizzes.id, steps.quizId)).all();
 
+
   type Quiz = typeof quizzes.$inferSelect;
   type Step = typeof steps.$inferSelect;
   
+  
 
-  const result = rows.reduce<{ quizzes: Quiz; steps: Step[] }[]>(
-    (acc, row) => {
-      const quizzes = row.quizzes;
-      const steps = row.steps;
+  // const result = rows.reduce<{ quiz:Quiz; steps: Step[] }[]>(
+   
+  //   (acc, row) => {
+  //     const quiz = row.quizzes;
+
+      
+  //     const steps = row.steps;
   
-      const existingEntry = acc.find(entry => entry.quizzes.id === quizzes.id);
+  //     if (existingEntry) {
+  //       if (steps) {
+  //         existingEntry.steps.push(steps);
+  //       }
+  //     } else {
+  //       acc.push({ quiz, steps: steps ? [steps] : [] });
+  //     }
   
-      if (existingEntry) {
-        if (steps) {
-          existingEntry.steps.push(steps);
-        }
-      } else {
-        acc.push({ quizzes, steps: steps ? [steps] : [] });
-      }
-  
-      return acc;
-    },
-    []
-  );
-  
+  //     return acc;
+  //   },
+  //   []
+  // );
+  const result = rows.map(row => {
+    const quiz = row.quizzes;
+    const steps = row.steps;
+
+    return {
+      id: quiz.id,
+      name: quiz.name,
+      steps: steps ? [steps] : [],
+    };
+  });
+
   console.log(result)
   return new NextResponse(JSON.stringify(result))
 }
@@ -64,3 +120,5 @@ export async function POST(request: Request, response: Response ) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+
