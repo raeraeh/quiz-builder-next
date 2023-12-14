@@ -15,8 +15,9 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
   try {
    // Extract quiz ID from the request parameters or body
-   const id = await params.id
- 
+   const id = params.id
+   console.log('Received ID:', id);
+
     // const { id } = request.body;
 
     // Check if the ID is provided

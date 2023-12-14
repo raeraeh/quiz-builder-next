@@ -42,10 +42,15 @@ export const getQuizzes = async () => {
 }
 
 export const deleteQuiz = async (id: string) => { 
-  console.log('id in client', id)
-  const res = await api.delete(`/${quizRoute}/${id}`)
-  queryClient.invalidateQueries({queryKey: [quizRoute]})
-  return res
+  try {
+    console.log('id in client', id);
+    const res = await api.delete(`/${quizRoute}/${id}`);
+    queryClient.invalidateQueries({queryKey: [quizRoute]});
+    return res;
+  } catch (error) {
+    console.error('Error deleting quiz:', error);
+    throw error; // Rethrow the error to propagate it to the calling code
+  }
 }
 
 export const updateQuiz = async (request: UpdateQuizRequest) => {

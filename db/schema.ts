@@ -15,7 +15,7 @@ export const quizzesRelations = relations(quizzes, ({ many }) => ({
 export const steps = sqliteTable("steps", {
     id: text("id").primaryKey().$default(() => uuidv4()),
     name: text("name"),
-    quizId: text("quizId").references((): AnySQLiteColumn => quizzes.id),
+    quizId: text("quizId").references((): AnySQLiteColumn => quizzes.id, { onDelete: "cascade" }),
 });
 
 export const stepsRelations = relations(steps, ({ one, many }) => ({
@@ -28,7 +28,7 @@ blocks: many(blocks)
 
 export const blocks = sqliteTable("blocks", {
   id: text("id").primaryKey().$default(() => uuidv4()),
-  stepId: text("stepId").references((): AnySQLiteColumn => steps.id),
+  stepId: text("stepId").references((): AnySQLiteColumn => steps.id, { onDelete: "cascade" }),
   position: integer("position"),
   type: text("type"),
   data:text('', { mode: 'json' })
