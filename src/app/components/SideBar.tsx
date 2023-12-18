@@ -43,7 +43,6 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
   const [isLargerThan1024] = useMediaQuery('(min-width: 1024px)');
 
   const deleteQuiz = (quiz: Quiz) => {
-    console.log('he', quiz.id)
     QuizClient.deleteQuiz(quiz.id);
   };
 

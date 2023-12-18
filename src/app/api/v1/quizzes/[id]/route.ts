@@ -14,21 +14,15 @@ export async function GET(request: Request,  { params }: { params: { id: string 
 export async function DELETE(request: Request, { params }: { params: { id: string }}, response: Response) {
 
   try {
-   // Extract quiz ID from the request parameters or body
    const id = params.id
-   console.log('Received ID:', id);
 
-    // const { id } = request.body;
-
-    // Check if the ID is provided
     if (!id) {
       return new NextResponse("Bad Request: Quiz ID is required", { status: 400 });
     }
-
-    // Delete quiz from the database
+  
     const deleteResult = await db.delete(quizzes).where(eq(quizzes.id, id));
 
-    // Return a success response
+
     return new NextResponse(`Quiz with ID ${id} deleted successfully`, { status: 200 });
   } catch (error) {
     console.error("Error deleting quiz:", error);
@@ -37,3 +31,28 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
   }
 }
+
+export async function PUT(request: Request, { params }: { params: { id: string }}, response: Response) {
+
+  try {
+   const id = params.id
+
+     // Parse the request body as JSON
+     const requestData = await request.json();
+    if (!id) {
+      return new NextResponse("Bad Request: Quiz ID is required", { status: 400 });
+    }
+
+    console.log("Updated quiz:", requestData);
+
+    const updateResult = await db.update(quizzes).set({ name: requestData.name }).where(eq(quizzes.id, id));
+
+    return new NextResponse(JSON.stringify(updateResult));
+  } catch (error) {
+    console.error("Error updating quiz:", error);
+    // Return an error response
+    return new NextResponse("Internal Server Error", { status: 500 });
+
+  }
+}
+

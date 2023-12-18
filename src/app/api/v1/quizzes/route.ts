@@ -56,44 +56,33 @@ export async function GET(request: Request) {
   }).from(quizzes).leftJoin(steps, eq(quizzes.id, steps.quizId)).all();
 
 
-  type Quiz = typeof quizzes.$inferSelect;
-  type Step = typeof steps.$inferSelect;
+  // type Quiz = typeof quizzes.$inferSelect;
+  // type Step = typeof steps.$inferSelect;
   
-  
-
-  // const result = rows.reduce<{ quiz:Quiz; steps: Step[] }[]>(
-   
-  //   (acc, row) => {
-  //     const quiz = row.quizzes;
-
-      
-  //     const steps = row.steps;
-  
-  //     if (existingEntry) {
-  //       if (steps) {
-  //         existingEntry.steps.push(steps);
-  //       }
-  //     } else {
-  //       acc.push({ quiz, steps: steps ? [steps] : [] });
-  //     }
-  
-  //     return acc;
-  //   },
-  //   []
-  // );
-  const result = rows.map(row => {
+const result = rows.reduce<Record<string, Quiz>>((acc, row) => {
     const quiz = row.quizzes;
-    const steps = row.steps;
+    const step = row.steps;
 
-    return {
-      id: quiz.id,
-      name: quiz.name,
-      steps: steps ? [steps] : [],
-    };
-  });
+    const existingEntry = acc[quiz.id];
 
-  console.log(result)
-  return new NextResponse(JSON.stringify(result))
+    if (!existingEntry) {
+      const newQuiz: Quiz = {
+        id: quiz.id,
+        name: quiz.name ?? '',
+        steps: [],
+      };
+      acc[quiz.id] = newQuiz;
+    }
+    if (step && step.id) {
+      acc[quiz.id]?.steps?.push(step.id);
+    }
+    return acc;
+  }, {});
+
+
+  const resultArray = Object.values(result)
+
+  return new NextResponse(JSON.stringify(resultArray))
 }
 
 

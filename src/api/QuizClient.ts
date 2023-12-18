@@ -15,7 +15,7 @@ interface CreateQuizRequest {
 interface UpdateQuizRequest {
   id: string;
   name: string;
-  steps: string[]
+  steps?: string[]
 }
 
 export const quizRoute = 'quizzes'
@@ -54,9 +54,18 @@ export const deleteQuiz = async (id: string) => {
 }
 
 export const updateQuiz = async (request: UpdateQuizRequest) => {
-  const res = api.update<UpdateQuizRequest, Quiz>(`/${quizRoute}/${request.id}`, request)
-  queryClient.invalidateQueries({queryKey: [quizRoute]})
-  return res
+  console.log('client', request)
+ 
+  try {
+    const res = await api.update<UpdateQuizRequest, Quiz>(`/${quizRoute}/${request.id}`, request);
+
+    queryClient.invalidateQueries({ queryKey: [quizRoute] });
+
+    return res;
+  } catch (error) {
+    console.error('Error updating quiz:', error);
+    throw error
+  }
 }
 
 
