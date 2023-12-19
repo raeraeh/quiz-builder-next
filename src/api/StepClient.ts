@@ -8,7 +8,7 @@ import QuizClient, { quizRoute } from './QuizClient';
 export interface Step {
   id: string;
   name: string;
-  blocks?: string[]
+  blocks: string[]
 }
 
 
@@ -47,7 +47,6 @@ export const  createStep = async (request: CreateStepRequest) => {
 
   const data =  {
     name: request.name,
-    blocks: []
   }
 
   const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, data)

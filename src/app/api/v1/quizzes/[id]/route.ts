@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 
 export async function GET(request: Request,  { params }: { params: { id: string } }) {
   const id = await params.id
- 
+  console.log('request', request)
   return new NextResponse(JSON.stringify(id))
 }
 

@@ -1,0 +1,30 @@
+.content-block {
+  position: relative;
+  border: 3px solid transparent; /* Set a transparent border initially */
+  transition: border 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.content-block-hightlight {
+  border: 3px solid #4fb9af;
+
+  color: white;
+  transition: transform 0.3s ease-in-out;
+}
+
+.content-block:hover {
+  border: 3px solid #4fb9af;
+}
+
+.inserter-icon {
+  display: none !important;
+  transition: transform 0.3s ease-in-out;
+}
+
+.content-block:hover .inserter-icon {
+  display: block !important;
+  position: absolute;
+  z-index: 1;
+  transform: translate(-50%, 50%);
+  left: 50%;
+  bottom: 0;
+  cursor: pointer;
+}

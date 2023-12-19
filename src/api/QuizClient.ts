@@ -5,7 +5,7 @@ import { queryClient } from '../lib/QueryClient';
 export interface Quiz {
   id: string;
   name: string;
-  steps?: string[]
+  steps: string[]
 }
 
 interface CreateQuizRequest {
@@ -15,7 +15,7 @@ interface CreateQuizRequest {
 interface UpdateQuizRequest {
   id: string;
   name: string;
-  steps?: string[]
+  steps: string[]
 }
 
 export const quizRoute = 'quizzes'
@@ -54,7 +54,6 @@ export const deleteQuiz = async (id: string) => {
 }
 
 export const updateQuiz = async (request: UpdateQuizRequest) => {
-  console.log('client', request)
  
   try {
     const res = await api.update<UpdateQuizRequest, Quiz>(`/${quizRoute}/${request.id}`, request);
