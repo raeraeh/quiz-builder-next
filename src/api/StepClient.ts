@@ -33,31 +33,33 @@ interface CreateStepRequest {
 }
 
 export const createStep = async (request: CreateStepRequest) => {
-  const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, {
-    request,
-  });
 
-  queryClient.invalidateQueries({ queryKey: [quizRoute] });
+  const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, 
+    request,
+  );
+  queryClient.invalidateQueries({ queryKey: [stepRoute] });
 
   return step;
 };
 
 export const getStep = async (request: GetStepRequest) => {
-  return await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
+  try {
+    console.log('req', request)
+    const res = await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
+  } catch (error) {
+    console.error('Error retrieving step:', error);
+    throw error
+  }
+  
 };
 
 export const deleteStep = async (request: DeleteStepRequest) => {
-  const quiz = await (await QuizClient.getQuiz(request.quizId)).data;
-
-  if (!quiz) throw new Error('Quiz not found');
-
-  quiz.steps = quiz.steps.filter((step) => step !== request.stepId);
-
-  QuizClient.updateQuiz(quiz);
+ 
+  const step: Step = await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
 
   queryClient.invalidateQueries({ queryKey: [quizRoute] });
 
-  return await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
+  return step
 };
 
 export const updateStep = async (request: UpdateStepRequest) => {

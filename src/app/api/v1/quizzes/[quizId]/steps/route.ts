@@ -19,6 +19,7 @@ export async function POST(request: Request, { params }: { params: { quizId: str
 
     const stepData: NewStep = await request.json();
 
+   
     const newStep = await db
       .insert(steps)
       .values({
@@ -27,8 +28,8 @@ export async function POST(request: Request, { params }: { params: { quizId: str
       })
       .returning();
 
-    // Log the newly created quiz
-    console.log('Created quiz:', newStep);
+    // Log the newly created step
+    console.log('Created step:', newStep);
 
     return new NextResponse(JSON.stringify(newStep), {
       status: 201, // 201 Created status code for successful creation

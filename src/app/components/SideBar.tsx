@@ -20,6 +20,7 @@ function SideBar() {
   });
 
   const generateQuiz = () => {
+    
     const newQuiz = { name: 'new quiz' };
 
     QuizClient.createQuiz(newQuiz);
@@ -104,7 +105,7 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
         )}
       </Flex>
 
-      {quiz.steps?.map((stepId: string) => (
+      {quiz.steps.map((stepId: string) => (
         <StepSideBarItem key={stepId} stepId={stepId} quiz={quiz} />
       ))}
     </VStack>
@@ -120,7 +121,7 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
           quizId: quiz.id,
           stepId: stepId,
         })
-      ).data;
+      );
     },
   });
 
@@ -138,6 +139,7 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
 
         {/* <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link> */}
         <Link href="hello"> {step?.name}</Link>
+        
         <Spacer />
         <IconButton
           colorScheme="teal"
