@@ -2,6 +2,7 @@ import { CreateQuizRequest, Quiz } from '@components/api/QuizClient';
 import { db } from 'db';
 import { quizzes, steps } from 'db/schema';
 import { eq } from 'drizzle-orm';
+import { NewQuiz } from '../api/v1/quizzes/[quizId]/route';
 
 export async function createQuizHandler(data: string) {
   try {
@@ -74,4 +75,25 @@ export async function getQuizzesHandler() {
 export function objectToArray(data: any) {
   const result = Object.values(data);
   return result;
+}
+
+export async function deleteQuizHandler(data: string) {
+  try {
+    const deletedQuiz = await db.delete(quizzes).where(eq(quizzes.id, data));
+    return deletedQuiz;
+  } catch (error) {
+    console.error('Error deleting quiz:', error);
+    throw error;
+  }
+}
+
+export async function upDateQuizHandler(quizData: NewQuiz, quizId: string) {
+  try {
+    const updateQuiz = await db.update(quizzes).set({ name: quizData.name }).where(eq(quizzes.id, quizId));
+
+    return updateQuiz;
+  } catch (error) {
+    console.error('Error updating quiz:', error);
+    throw error;
+  }
 }

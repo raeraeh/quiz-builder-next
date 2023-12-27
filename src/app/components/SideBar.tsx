@@ -123,6 +123,11 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
   
       console.log('Step API Response:', response);
   
+      if (response === undefined) {
+        // Handle undefined case, e.g., return an empty object
+        return {};
+      }
+  
       return response;
     
     },
