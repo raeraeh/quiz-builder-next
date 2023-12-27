@@ -116,12 +116,15 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
   const { data: step } = useQuery({
     queryKey: [stepRoute, stepId],
     queryFn: async () => {
-      return (
-        await StepClient.getStep({
-          quizId: quiz.id,
-          stepId: stepId,
-        })
-      );
+      const response = await StepClient.getStep({
+        quizId: quiz.id,
+        stepId: stepId,
+      });
+  
+      console.log('Step API Response:', response);
+  
+      return response;
+    
     },
   });
 

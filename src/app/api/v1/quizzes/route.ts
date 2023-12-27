@@ -1,9 +1,4 @@
 import { NextResponse } from 'next/server';
-import { db } from '../../../../../db';
-import { quizzes, steps } from '../../../../../db/schema';
-import { eq } from 'drizzle-orm';
-import { Quiz } from '../../../../api/QuizClient';
-import { Step } from '../../../../api/StepClient';
 import { createQuizHandler, getQuizzesHandler, objectToArray } from '@components/app/services/quizService';
 
 export async function GET(request: Request) {

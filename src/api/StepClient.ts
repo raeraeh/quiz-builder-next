@@ -27,16 +27,13 @@ interface DeleteStepRequest {
 
 export const stepRoute = 'steps';
 
-interface CreateStepRequest {
+export interface CreateStepRequest {
   quizId: string;
   name: string;
 }
 
 export const createStep = async (request: CreateStepRequest) => {
-
-  const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, 
-    request,
-  );
+  const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, request);
   queryClient.invalidateQueries({ queryKey: [stepRoute] });
 
   return step;
@@ -44,22 +41,20 @@ export const createStep = async (request: CreateStepRequest) => {
 
 export const getStep = async (request: GetStepRequest) => {
   try {
-    console.log('req', request)
+    console.log('req', request);
     const res = await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
   } catch (error) {
     console.error('Error retrieving step:', error);
-    throw error
+    throw error;
   }
-  
 };
 
 export const deleteStep = async (request: DeleteStepRequest) => {
- 
   const step: Step = await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
 
   queryClient.invalidateQueries({ queryKey: [quizRoute] });
 
-  return step
+  return step;
 };
 
 export const updateStep = async (request: UpdateStepRequest) => {

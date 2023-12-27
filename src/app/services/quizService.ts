@@ -3,15 +3,30 @@ import { db } from 'db';
 import { quizzes, steps } from 'db/schema';
 import { eq } from 'drizzle-orm';
 
-export async function createQuizHandler(data: any) {
-  // const rows = await db.select().from(quizzes).where(eq(quizzes.name, data));
+export async function createQuizHandler(data: string) {
+  try {
+    const newQuiz = await db.insert(quizzes).values({ name: data }).returning();
+    return newQuiz;
+  } catch (error) {
+    console.error('Error creating new quiz:', error);
+    throw error;
+  }
+}
 
-  // if (rows.length !== 0) {
-  //   throw new Error('Quiz with the same name already exists.');
-  // }
+export async function getQuizHandler(data: string) {
+  try {
+    const quizId = data;
 
-  const newQuiz = await db.insert(quizzes).values({ name: data }).returning();
-  return newQuiz;
+    const rows = await db.select().from(quizzes).where(eq(quizzes.id, quizId));
+
+    if (rows.length === 0) {
+      throw new Error('Quiz does not exist');
+    }
+    return rows[0];
+  } catch (error) {
+    console.error('Error retrieving quiz:', error);
+    throw error;
+  }
 }
 
 export async function getQuizzesHandler() {
@@ -51,7 +66,7 @@ export async function getQuizzesHandler() {
 
     return result;
   } catch (error) {
-    console.error('Error retrieving quiz:', error);
+    console.error('Error retrieving quizzes:', error);
     throw error;
   }
 }

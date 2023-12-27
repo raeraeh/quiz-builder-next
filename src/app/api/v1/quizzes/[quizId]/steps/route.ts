@@ -2,31 +2,24 @@ import { NextResponse } from 'next/server';
 import { db } from 'db';
 import { quizzes, steps } from 'db/schema';
 import { eq } from 'drizzle-orm';
+import { getQuizHandler } from '@components/app/services/quizService';
+import { createStepHandler } from '@components/app/services/stepService';
 
-type NewStep = typeof steps.$inferInsert;
+export type NewStep = typeof steps.$inferInsert;
 
 export async function POST(request: Request, { params }: { params: { quizId: string } }) {
   try {
-    if (!params.quizId) {
-      return new NextResponse('Not found', { status: 404 });
-    }
     const quizId = params.quizId;
-    const rows = await db.select().from(quizzes).where(eq(quizzes.id, quizId));
 
-    if (rows.length === 0) {
+    const existingQuiz = await getQuizHandler(quizId);
+
+    if (!existingQuiz) {
       return new NextResponse('Not found', { status: 404 });
     }
 
     const stepData: NewStep = await request.json();
 
-   
-    const newStep = await db
-      .insert(steps)
-      .values({
-        name: stepData.name,
-        quizId,
-      })
-      .returning();
+    const newStep = createStepHandler(stepData);
 
     // Log the newly created step
     console.log('Created step:', newStep);
