@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { createQuizHandler, getQuizzesHandler, objectToArray } from '@components/app/services/quizService';
+import { QuizService, objectToArray } from '@components/app/services/quizService';
 
 export async function GET(request: Request) {
   try {
-    const result = await getQuizzesHandler();
+    const result = await QuizService.getQuizzes();
     const resultArray = objectToArray(result);
     return new NextResponse(JSON.stringify(resultArray));
   } catch (error) {
@@ -21,7 +21,7 @@ export async function POST(request: Request, response: Response) {
     const requestData = await request.json();
 
     // Add a new quiz to the database
-    const newQuiz = await createQuizHandler(requestData.name);
+    const newQuiz = await QuizService.createQuiz(requestData.name);
 
     // Log the newly created quiz
     console.log('Created quiz:', newQuiz);

@@ -2,12 +2,12 @@ import { db } from 'db';
 import { quizzes } from 'db/schema';
 import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
-import { deleteQuizHandler, getQuizHandler, upDateQuizHandler } from '@components/app/services/quizService';
+import { QuizService } from '@components/app/services/quizService';
 
 export async function GET(request: Request, { params }: { params: { quizId: string } }) {
   const quizId = params.quizId;
 
-  const selectedQuiz = await getQuizHandler(quizId);
+  const selectedQuiz = await QuizService.getQuiz(quizId);
   console.log('route quiz');
   return new NextResponse(JSON.stringify(selectedQuiz));
 }
@@ -20,7 +20,7 @@ export async function DELETE(request: Request, { params }: { params: { quizId: s
       return new NextResponse('Bad Request: Quiz ID is required', { status: 400 });
     }
 
-    deleteQuizHandler(quizId);
+    QuizService.deleteQuiz(quizId);
 
     return new NextResponse(`Quiz with ID ${quizId} deleted successfully`, { status: 200 });
   } catch (error) {
@@ -41,7 +41,7 @@ export async function PUT(request: Request, { params }: { params: { quizId: stri
       return new NextResponse('Bad Request: Quiz ID is required', { status: 400 });
     }
 
-    const result = await upDateQuizHandler(requestData, quizId);
+    const result = await QuizService.updateQuiz(requestData, quizId);
 
     return new NextResponse(JSON.stringify(result));
   } catch (error) {

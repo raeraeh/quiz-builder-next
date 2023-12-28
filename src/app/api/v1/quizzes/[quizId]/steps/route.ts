@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from 'db';
 import { quizzes, steps } from 'db/schema';
 import { eq } from 'drizzle-orm';
-import { getQuizHandler } from '@components/app/services/quizService';
+import { QuizService.getQuiz } from '@components/app/services/quizService';
 import { createStepHandler } from '@components/app/services/stepService';
 
 export type NewStep = typeof steps.$inferInsert;
@@ -11,7 +11,7 @@ export async function POST(request: Request, { params }: { params: { quizId: str
   try {
     const quizId = params.quizId;
 
-    const existingQuiz = await getQuizHandler(quizId);
+    const existingQuiz = await QuizService.getQuiz(quizId);
 
     if (!existingQuiz) {
       return new NextResponse('Not found', { status: 404 });
