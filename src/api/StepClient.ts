@@ -33,6 +33,7 @@ export interface CreateStepRequest {
 }
 
 export const createStep = async (request: CreateStepRequest) => {
+  console.log('client request', request);
   const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, request);
   queryClient.invalidateQueries({ queryKey: [stepRoute] });
 

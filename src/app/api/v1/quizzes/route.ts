@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { QuizService, objectToArray } from '@components/app/services/quizService';
+import { QuizService } from '@components/app/services/quizService';
+import { objectToArray } from '@components/app/utils/objectToArray';
 
 export async function GET(request: Request) {
   try {

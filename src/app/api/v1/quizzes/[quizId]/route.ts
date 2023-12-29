@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { quizId: stri
   return new NextResponse(JSON.stringify(selectedQuiz));
 }
 
-export async function DELETE(request: Request, { params }: { params: { quizId: string } }, response: Response) {
+export async function DELETE({ params }: { params: { quizId: string } }) {
   try {
     const quizId = params.quizId;
 

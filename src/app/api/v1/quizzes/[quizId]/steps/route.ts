@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { db } from 'db';
 import { quizzes, steps } from 'db/schema';
 import { eq } from 'drizzle-orm';
-import { QuizService.getQuiz } from '@components/app/services/quizService';
-import { createStepHandler } from '@components/app/services/stepService';
+import { QuizService } from '@components/app/services/quizService';
+import { StepService } from '@components/app/services/stepService';
 
 export type NewStep = typeof steps.$inferInsert;
 
@@ -19,10 +19,7 @@ export async function POST(request: Request, { params }: { params: { quizId: str
 
     const stepData: NewStep = await request.json();
 
-    const newStep = createStepHandler(stepData);
-
-    // Log the newly created step
-    console.log('Created step:', newStep);
+    const newStep = StepService.createStep(stepData);
 
     return new NextResponse(JSON.stringify(newStep), {
       status: 201, // 201 Created status code for successful creation
