@@ -20,7 +20,6 @@ function SideBar() {
   });
 
   const generateQuiz = () => {
-    
     const newQuiz = { name: 'new quiz' };
 
     QuizClient.createQuiz(newQuiz);
@@ -68,7 +67,6 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
       <Flex>
         <Button pr={2} colorScheme="teal" variant="link">
           <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link>
-          {/* <Link href="hello">{quiz.name}</Link> */}
         </Button>
         <Spacer />
         {isLargerThan1024 ? (
@@ -87,15 +85,12 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
               <EditIcon />
             </IconButton>
             <Button aria-label="add step" colorScheme="teal" fontSize="16px" size="sm" onClick={() => addStep(quiz)}>
-              <SmallAddIcon />
-              Add a step
+              Add step
             </Button>
           </Flex>
         ) : (
           <Menu>
-            <MenuButton as={Button} size="sm" colorScheme="teal" rightIcon={<ChevronDownIcon />}>
-              Actions
-            </MenuButton>
+            <MenuButton as={IconButton} size="sm" colorScheme="teal" icon={<ChevronDownIcon />}></MenuButton>
             <MenuList>
               <MenuItem onClick={() => deleteQuiz(quiz)}>Delete quiz</MenuItem>
               <MenuItem onClick={() => updateQuiz(quiz)}>Edit quiz</MenuItem>
@@ -116,20 +111,12 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
   const { data: step } = useQuery({
     queryKey: [stepRoute, stepId],
     queryFn: async () => {
-      const response = await StepClient.getStep({
-        quizId: quiz.id,
-        stepId: stepId,
-      });
-  
-      console.log('Step API Response:', response);
-  
-      if (response === undefined) {
-        // Handle undefined case, e.g., return an empty object
-        return {};
-      }
-  
-      return response;
-    
+      return (
+        await StepClient.getStep({
+          quizId: quiz.id,
+          stepId: stepId,
+        })
+      ).data;
     },
   });
 

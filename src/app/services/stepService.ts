@@ -42,20 +42,4 @@ export class StepService {
   }
 }
 
-//update, delete
-
-// export async function getStepHandler(data: string) {
-//   try {
-//     const quizId = data;
-
-//     const rows = await db.select().from(quizzes).where(eq(quizzes.id, quizId));
-
-//     if (rows.length === 0) {
-//       throw new Error('Quiz does not exist');
-//     }
-//     return rows[0];
-//   } catch (error) {
-//     console.error('Error retrieving quiz:', error);
-//     throw error;
-//   }
-// }
+//update
