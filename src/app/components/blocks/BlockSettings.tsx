@@ -3,9 +3,9 @@
 import { Box, Button, Flex, FormLabel } from '@chakra-ui/react';
 
 import { BlockClient } from '../../../api/BlockClient';
-import { useStepEditorContext } from '../../pages/StepEditor/StepEditorContext';
 
 import { FormInput } from '../FormInput';
+import { useStepEditorContext } from '../StepEditor/StepEditorContext';
 
 interface BlockEditorProps {
   stepId: string;

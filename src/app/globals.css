@@ -65,6 +65,13 @@ a {
   text-decoration: none;
 }
 
+/* a:hover {
+  color: #4fb9af;
+  text-decoration: underline;
+  background: none !important;
+  border-color: none !important;
+} */
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

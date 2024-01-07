@@ -12,10 +12,12 @@
   
   .container {
     position: relative;
+
   }
 
   .section {
     background-color: var(--primary-color);
+    display: flex;
   
     /* @media (max-width: 700px) {
        padding: 10px;
@@ -60,8 +62,8 @@
   .right-sidebar {
     right: 0;
     position: relative;
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
   }
   
   .tab-button-selected {

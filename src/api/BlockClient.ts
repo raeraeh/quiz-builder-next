@@ -1,22 +1,20 @@
 import api from '.';
 import { queryClient } from '../lib/QueryClient';
+import { quizRoute } from './QuizClient';
 import StepClient, { stepRoute } from './StepClient';
-
 
 export enum BlockType {
   TEXTAREA = 'textarea',
   INPUT = 'input',
 }
 
-
 export interface Block {
   id: string;
   type: BlockType;
-  data: Record<string, any>
+  data: Record<string, any>;
 }
 
-
-export const blockRoute = 'blocks'
+export const blockRoute = 'blocks';
 
 // Create
 export interface CreateBlockRequest {
@@ -28,33 +26,20 @@ export interface CreateBlockRequest {
 }
 
 export const createBlock = async (request: CreateBlockRequest) => {
-  const step = await (await StepClient.getStep({quizId: request.quizId, stepId: request.stepId})).data
-  if (!step) throw new Error('Step not found');
-
   const data = {
+    stepId: request.stepId,
+    postion: request.position ?? null,
     type: request.type,
-    data: request.data ?? {}
-  }
+    data: request.data ?? {},
+  };
+  console.log('client', data);
 
-  const block: Block = await api.post(`${stepRoute}/${request.stepId}/${blockRoute}`, data)
+  const block: Block = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}/${blockRoute}`, data);
 
-  const blocks = [...step.blocks]
-  
-  blocks.splice(request.position !== undefined ? request.position + 1 : step.blocks.length, 0, block.id)
+  queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
 
-  console.log('blocks', blocks)
-  
-  StepClient.updateStep({
-    ...step,
-    quizId: request.quizId,
-    blocks: blocks,
-  })
-
-
-  queryClient.invalidateQueries({queryKey: [stepRoute,step.id]})
-
-  return block
-}
+  return block;
+};
 
 // Get
 export interface GetBlockRequest {
@@ -63,27 +48,22 @@ export interface GetBlockRequest {
 }
 
 export const getBlock = async (request: GetBlockRequest) => {
-  return await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`)
-}
-
+  return await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+};
 
 export interface UpdateBlockRequest extends Block {
   stepId: string;
   type: BlockType;
-  data: Record<string, any>
+  data: Record<string, any>;
 }
 
-export const updateBlock = async ( request: UpdateBlockRequest ) => {
+export const updateBlock = async (request: UpdateBlockRequest) => {
+  const block = await api.update<UpdateBlockRequest, Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.id}`, request);
 
+  queryClient.invalidateQueries({ queryKey: [blockRoute, block.id] });
 
-
-  const block = await api.update<UpdateBlockRequest, Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.id}`, request)
-
-  queryClient.invalidateQueries({queryKey: [blockRoute,block.id]})
-
-
-  return block
-}
+  return block;
+};
 
 // Delete
 export interface DeleteBlockRequest {
@@ -93,26 +73,25 @@ export interface DeleteBlockRequest {
 }
 
 export const deleteBlock = async (request: DeleteBlockRequest) => {
-  const step = await (await StepClient.getStep({quizId: request.quizId, stepId: request.stepId})).data
+  const step = await (await StepClient.getStep({ quizId: request.quizId, stepId: request.stepId })).data;
   if (!step) throw new Error('Step not found');
 
   StepClient.updateStep({
     ...step,
     quizId: request.quizId,
-    blocks: step.blocks.filter((block : string) => block !== request.blockId),
-  })
+    blocks: step.blocks.filter((block: string) => block !== request.blockId),
+  });
 
-  const res =  await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`)
+  const res = await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
 
-  queryClient.invalidateQueries({queryKey: [stepRoute, request.stepId]})
+  queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
 
-
-  return res
-}
+  return res;
+};
 
 export const BlockClient = {
   createBlock,
   getBlock,
   updateBlock,
   deleteBlock,
-}
+};

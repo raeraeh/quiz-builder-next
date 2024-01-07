@@ -4,10 +4,11 @@ import { Step } from '../../../api/StepClient';
 
 import './StepPreview.css';
 import { blockLibrary } from '../blocks/BlockLibrary';
-import { useStepEditorContext } from '../../pages/StepEditor/StepEditorContext';
+
 import { Box, VStack } from '@chakra-ui/react';
 
 import NewBlockPopoverModal from '../NewBlockPopoverModal';
+import { useStepEditorContext } from '../StepEditor/StepEditorContext';
 
 interface BlockRendererProps {
   block?: Block | null;
@@ -38,7 +39,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
         return {
           queryKey: [blockRoute, blockId],
           queryFn: async () => {
-            return BlockClient.getBlock({ blockId, stepId: step?.id ?? '' });
+            return BlockClient.getBlock({ blockId, stepId: step.id });
           },
         };
       }) ?? [],

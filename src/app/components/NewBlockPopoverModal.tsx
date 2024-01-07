@@ -18,8 +18,8 @@ import { BlockInserter } from './BlockInserter';
 
 interface NewBlockPopoverProps {
   title?: string;
-  quizId?: string;
-  stepId?: string;
+  quizId: string;
+  stepId: string;
   triggerIcon?: boolean;
   btnText: string;
 }
@@ -80,7 +80,7 @@ function NewBlockPopoverModal({ title, quizId, stepId, triggerIcon, btnText }: N
         <PopoverHeader>{title ? title : 'Select block type:'}</PopoverHeader>
         <PopoverCloseButton />
         <PopoverBody>
-          <BlockInserter stepId={stepId ?? ''} quizId={quizId ?? ''} />
+          <BlockInserter stepId={stepId} quizId={quizId} />
         </PopoverBody>
       </PopoverContent>
     </Popover>

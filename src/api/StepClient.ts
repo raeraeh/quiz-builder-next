@@ -42,7 +42,6 @@ export const createStep = async (request: CreateStepRequest) => {
 
 export const getStep = async (request: GetStepRequest) => {
   try {
-    console.log('req', request);
     const res = await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
     return res;
   } catch (error) {

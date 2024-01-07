@@ -1,8 +1,6 @@
 import { Quiz } from '@components/api/QuizClient';
 import { StepService } from '@components/app/services/stepService';
-import { db } from 'db';
-import { quizzes, steps } from 'db/schema';
-import { eq } from 'drizzle-orm';
+
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request, { params }: { params: { stepId: string } }) {

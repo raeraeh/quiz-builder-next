@@ -1,8 +1,6 @@
 'use client';
 
-import styles from './SideBar.module.css';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 
 import { Button, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Spacer, VStack, useMediaQuery } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon, ChevronRightIcon, SmallAddIcon, ChevronDownIcon } from '@chakra-ui/icons';

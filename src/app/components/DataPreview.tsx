@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useStepEditorContext } from '../pages/StepEditor/StepEditorContext';
+import { useStepEditorContext } from './StepEditor/StepEditorContext';
+// import { useStepEditorContext } from '../pages/StepEditor/StepEditorContext';
 
 function DataPreview() {
   const stepEditorContext = useStepEditorContext();
