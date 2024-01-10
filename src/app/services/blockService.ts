@@ -17,9 +17,9 @@ export class BlockService {
       throw error;
     }
   }
-  static async getBlock(data: string) {
+  static async getBlock(blockData: string) {
     try {
-      const blockId = data;
+      const blockId = blockData;
 
       const rows = await db.select().from(blocks).where(eq(blocks.id, blockId));
 

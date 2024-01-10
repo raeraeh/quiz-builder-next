@@ -32,6 +32,7 @@ interface StepPreviewProps {
 
 function StepPreview({ step, quizId }: StepPreviewProps) {
   const stepEditorContext = useStepEditorContext();
+  console.log('step in step preview', step);
 
   const blocksRes = useQueries({
     queries:
@@ -39,7 +40,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
         return {
           queryKey: [blockRoute, blockId],
           queryFn: async () => {
-            return BlockClient.getBlock({ blockId, stepId: step.id });
+            return (await BlockClient.getBlock({ quizId, blockId, stepId: step.id })).data;
           },
         };
       }) ?? [],
@@ -52,6 +53,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
           const isSelected = stepEditorContext?.selectedBlockId === block?.id;
           return (
             <Box
+              key={block?.id}
               w="20vw"
               p={1}
               color="white"
@@ -59,7 +61,6 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
               onClick={() => stepEditorContext?.setSelectedBlockId(block?.id ?? '')}
             >
               <BlockRenderer block={isSelected ? stepEditorContext?.block : block} isSelected={isSelected} />
-
               <NewBlockPopoverModal triggerIcon stepId={step?.id} quizId={quizId} />
             </Box>
           );

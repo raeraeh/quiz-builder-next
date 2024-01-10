@@ -43,12 +43,13 @@ export const createBlock = async (request: CreateBlockRequest) => {
 
 // Get
 export interface GetBlockRequest {
+  quizId: string;
   stepId: string;
   blockId: string;
 }
 
 export const getBlock = async (request: GetBlockRequest) => {
-  return await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+  return await api.get<Block>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
 };
 
 export interface UpdateBlockRequest extends Block {

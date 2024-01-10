@@ -31,7 +31,7 @@ export async function DELETE({ params }: { params: { quizId: string } }) {
 
 export type NewQuiz = typeof quizzes.$inferInsert;
 
-export async function PUT(request: Request, { params }: { params: { quizId: string } }, response: Response) {
+export async function PUT(request: Request, { params }: { params: { quizId: string } }) {
   try {
     const quizId = params.quizId;
 

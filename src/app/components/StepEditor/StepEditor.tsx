@@ -10,9 +10,6 @@ import { StepEditorProvider } from './StepEditorContext';
 
 import { Box, Button, Flex, forwardRef } from '@chakra-ui/react';
 
-import { BlockClient, BlockType } from '../../../api/BlockClient';
-import { blockLibrary } from '../../components/blocks/BlockLibrary';
-import PopoverModal from '../../components/NewBlockPopoverModal';
 import EditSideBar from '../../components/EditSideBar';
 import NewBlockPopoverModal from '../../components/NewBlockPopoverModal';
 
