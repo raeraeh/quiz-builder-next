@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useStepEditorContext } from '../pages/StepEditor/StepEditorContext';
+import { useStepEditorContext } from './StepEditor/StepEditorContext';
+// import { useStepEditorContext } from '../pages/StepEditor/StepEditorContext';
 
 function DataPreview() {
   const stepEditorContext = useStepEditorContext();
@@ -11,11 +12,11 @@ function DataPreview() {
         </Text>
       </Flex>
 
-      {Object.entries(stepEditorContext?.block?.data ?? {}).map(([key, value]) => {
+      {Object.entries(stepEditorContext?.selectedBlock?.data ?? {}).map(([key, value]) => {
         return (
-          <Box key={key} display="flex" pl={6}>
-            <Text>{`"${key}": "${value}",`}</Text>
-          </Box>
+          <Flex key={key} alignItems="left" pl={4}>
+            <Text fontSize="xs">{`"${key}": "${value}",`}</Text>
+          </Flex>
         );
       })}
 

@@ -1,22 +1,22 @@
-import { useParams } from 'react-router-dom';
+'use client';
 
 import { useState } from 'react';
 import StepClient, { Step, stepRoute } from '../../../api/StepClient';
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 
 import StepPreview from '../../components/StepPreview/StepPreview';
 import { StepEditorProvider } from './StepEditorContext';
 
 import { Box, Button, Flex, forwardRef } from '@chakra-ui/react';
 
-import { BlockClient, BlockType } from '../../../api/BlockClient';
-import { blockLibrary } from '../../components/blocks/BlockLibrary';
-import PopoverModal from '../../components/NewBlockPopoverModal';
 import EditSideBar from '../../components/EditSideBar';
 import NewBlockPopoverModal from '../../components/NewBlockPopoverModal';
+import { queryClient } from '@components/lib/QueryClient';
 
 function StepEditor() {
-  const { quizId, stepId } = useParams();
+  const { quizId, stepId } = useParams<{ quizId: string; stepId: string }>();
+
   const [step, setStep] = useState<Step | null>();
 
   const { data: stepRes } = useQuery({
@@ -25,9 +25,17 @@ function StepEditor() {
       if (!stepId || !quizId) {
         return;
       }
-      const step = await StepClient.getStep({ stepId, quizId });
-      setStep(step);
-      return step;
+
+      try {
+        const response = await StepClient.getStep({ stepId, quizId });
+        const stepData = response.data;
+        setStep(stepData);
+
+        return stepData;
+      } catch (error) {
+        console.error('Error fetching step:', error);
+        throw error;
+      }
     },
     enabled: !!stepId,
   });

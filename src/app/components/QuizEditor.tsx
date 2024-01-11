@@ -1,5 +1,7 @@
-import { useParams } from 'react-router-dom';
+'use client';
 import QuizClient, { Quiz, quizRoute } from '../../api/QuizClient';
+import { useParams } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormInput } from '../components/FormInput';
@@ -22,7 +24,7 @@ function QuizEditor() {
     queryKey: [quizRoute, quizId],
     queryFn: async () => {
       const quiz = await QuizClient.getQuiz(quizId ?? '');
-      setQuiz(quiz);
+      setQuiz(quiz.data);
       return quiz;
     },
     enabled: !!quizId,

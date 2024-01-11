@@ -4,22 +4,22 @@ import { Step } from '../../../api/StepClient';
 
 import './StepPreview.css';
 import { blockLibrary } from '../blocks/BlockLibrary';
-import { useStepEditorContext } from '../../pages/StepEditor/StepEditorContext';
+
 import { Box, VStack } from '@chakra-ui/react';
 
 import NewBlockPopoverModal from '../NewBlockPopoverModal';
+import { useStepEditorContext } from '../StepEditor/StepEditorContext';
 
 interface BlockRendererProps {
   block?: Block | null;
   isSelected?: boolean;
 }
 
-export const BlockRenderer = ({ block }: BlockRendererProps): JSX.Element => {
+export const BlockRenderer = ({ block, isSelected }: BlockRendererProps): JSX.Element => {
   if (!block) {
     return <></>;
   }
-
-  const BlockComponent = blockLibrary[block?.type].block;
+  const BlockComponent = blockLibrary[block?.type]?.block;
 
   return <BlockComponent {...block.data} />;
 };
@@ -38,7 +38,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
         return {
           queryKey: [blockRoute, blockId],
           queryFn: async () => {
-            return BlockClient.getBlock({ blockId, stepId: step?.id ?? '' });
+            return (await BlockClient.getBlock({ blockId, stepId: step.id })).data;
           },
         };
       }) ?? [],
@@ -51,14 +51,14 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
           const isSelected = stepEditorContext?.selectedBlockId === block?.id;
           return (
             <Box
+              key={block?.id}
               w="20vw"
               p={1}
               color="white"
               className={`content-block ${isSelected ? 'content-block-hightlight' : ''}`}
               onClick={() => stepEditorContext?.setSelectedBlockId(block?.id ?? '')}
             >
-              <BlockRenderer block={isSelected ? stepEditorContext?.block : block} isSelected={isSelected} />
-
+              <BlockRenderer block={isSelected ? stepEditorContext?.selectedBlock : block} isSelected={isSelected} />
               <NewBlockPopoverModal triggerIcon stepId={step?.id} quizId={quizId} />
             </Box>
           );

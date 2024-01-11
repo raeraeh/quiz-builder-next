@@ -1,8 +1,6 @@
 'use client';
 
-import styles from './SideBar.module.css';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 
 import { Button, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Spacer, VStack, useMediaQuery } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon, ChevronRightIcon, SmallAddIcon, ChevronDownIcon } from '@chakra-ui/icons';
@@ -66,8 +64,7 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
     <VStack align="stretch" spacing={3}>
       <Flex>
         <Button pr={2} colorScheme="teal" variant="link">
-          {/* <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link> */}
-          <Link href="hello">{quiz.name}</Link>
+          <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link>
         </Button>
         <Spacer />
         {isLargerThan1024 ? (
@@ -86,15 +83,12 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
               <EditIcon />
             </IconButton>
             <Button aria-label="add step" colorScheme="teal" fontSize="16px" size="sm" onClick={() => addStep(quiz)}>
-              <SmallAddIcon />
-              Add a step
+              Add step
             </Button>
           </Flex>
         ) : (
           <Menu>
-            <MenuButton as={Button} size="sm" colorScheme="teal" rightIcon={<ChevronDownIcon />}>
-              Actions
-            </MenuButton>
+            <MenuButton as={IconButton} size="sm" colorScheme="teal" icon={<ChevronDownIcon />}></MenuButton>
             <MenuList>
               <MenuItem onClick={() => deleteQuiz(quiz)}>Delete quiz</MenuItem>
               <MenuItem onClick={() => updateQuiz(quiz)}>Edit quiz</MenuItem>
@@ -104,7 +98,7 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
         )}
       </Flex>
 
-      {quiz.steps?.map((stepId: string) => (
+      {quiz.steps.map((stepId: string) => (
         <StepSideBarItem key={stepId} stepId={stepId} quiz={quiz} />
       ))}
     </VStack>
@@ -136,8 +130,9 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
       <Flex align="center">
         <ChevronRightIcon mr={1} />
 
-        {/* <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link> */}
-        <Link href="hello"> {step?.name}</Link>
+        <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link>
+        {/* <Link href="hello"> {step?.name}</Link>
+         */}
         <Spacer />
         <IconButton
           colorScheme="teal"

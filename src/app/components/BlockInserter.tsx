@@ -25,7 +25,7 @@ export const BlockInserter = ({ stepId, quizId }: BlockInserterProps) => {
     <Flex justify="space-around" p={2} gap={2}>
       {Object.keys(blockLibrary).map((block) => {
         return (
-          <Button aria-label={`select ${block} block`} onClick={() => addBlock(block as BlockType)}>
+          <Button key={block} aria-label={`select ${block} block`} onClick={() => addBlock(block as BlockType)}>
             {blockLibrary[block as BlockType].inserterOptions.label}
           </Button>
         );
