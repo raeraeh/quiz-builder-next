@@ -13,14 +13,14 @@ interface BlockEditorProps {
 
 export function BlockSettings({ stepId }: BlockEditorProps) {
   const stepEditorContext = useStepEditorContext();
-  const block = stepEditorContext?.block;
+  const block = stepEditorContext?.selectedBlock;
   if (!block) return <>Select a block</>;
   return (
     <>
       <Box maxW="350px" display="flex" flexDirection="column" gap={2}>
-        {Object.keys(stepEditorContext?.block?.data ?? {}).map((key) => {
+        {Object.keys(stepEditorContext?.selectedBlock?.data ?? {}).map((key) => {
           return (
-            <Flex alignItems="center" justify="space-between" gap="2">
+            <Flex key={key} alignItems="center" justify="space-between" gap="2">
               <FormLabel fontSize="sm" mb={0}>
                 {key}:
               </FormLabel>
@@ -30,13 +30,13 @@ export function BlockSettings({ stepId }: BlockEditorProps) {
                 variant="outline"
                 boxShadow="sm"
                 rounded="md"
-                value={stepEditorContext?.block?.data[key]}
+                value={stepEditorContext?.selectedBlock?.data[key]}
                 onChange={(e) => {
-                  stepEditorContext?.block &&
-                    stepEditorContext?.setBlock({
-                      ...stepEditorContext?.block,
+                  stepEditorContext?.selectedBlock &&
+                    stepEditorContext?.setSelectedBlock({
+                      ...stepEditorContext?.selectedBlock,
                       data: {
-                        ...stepEditorContext?.block?.data,
+                        ...stepEditorContext?.selectedBlock?.data,
                         [key]: e.target.value,
                       },
                     });
@@ -45,22 +45,31 @@ export function BlockSettings({ stepId }: BlockEditorProps) {
             </Flex>
           );
         })}
-        {stepEditorContext?.block && (
-          <Button
-            aria-label="update block"
-            colorScheme="teal"
-            fontSize="16px"
-            size="sm"
-            onClick={() =>
-              BlockClient.updateBlock({
-                stepId,
-                ...block,
-              })
-            }
-          >
-            Save
-          </Button>
-        )}
+
+        <Button
+          aria-label="update block"
+          colorScheme="teal"
+          fontSize="16px"
+          size="sm"
+          onClick={() =>
+            BlockClient.updateBlock({
+              stepId,
+              ...block,
+            })
+          }
+        >
+          Save
+        </Button>
+        <Button
+          aria-label="delete block"
+          colorScheme="teal"
+          variant="outline"
+          fontSize="16px"
+          size="sm"
+          onClick={() => BlockClient.deleteBlock({ stepId, blockId: block?.id })}
+        >
+          Delete block
+        </Button>
       </Box>
     </>
   );

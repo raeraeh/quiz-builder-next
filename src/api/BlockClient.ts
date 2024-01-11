@@ -34,7 +34,7 @@ export const createBlock = async (request: CreateBlockRequest) => {
   };
   console.log('client', data);
 
-  const block: Block = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}/${blockRoute}`, data);
+  const block: Block = await api.post(`${stepRoute}/${request.stepId}/${blockRoute}`, data);
 
   queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
 
@@ -43,13 +43,13 @@ export const createBlock = async (request: CreateBlockRequest) => {
 
 // Get
 export interface GetBlockRequest {
-  quizId: string;
   stepId: string;
   blockId: string;
 }
 
 export const getBlock = async (request: GetBlockRequest) => {
-  return await api.get<Block>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+  const block = await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+  return block;
 };
 
 export interface UpdateBlockRequest extends Block {
@@ -68,26 +68,19 @@ export const updateBlock = async (request: UpdateBlockRequest) => {
 
 // Delete
 export interface DeleteBlockRequest {
-  quizId: string;
   stepId: string;
   blockId: string;
 }
 
 export const deleteBlock = async (request: DeleteBlockRequest) => {
-  const step = await (await StepClient.getStep({ quizId: request.quizId, stepId: request.stepId })).data;
-  if (!step) throw new Error('Step not found');
+  const block: Block = await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
 
-  StepClient.updateStep({
-    ...step,
-    quizId: request.quizId,
-    blocks: step.blocks.filter((block: string) => block !== request.blockId),
-  });
-
-  const res = await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+  if (!block) throw new Error('Step not found');
 
   queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
+  queryClient.invalidateQueries({ queryKey: [blockRoute, block.id] });
 
-  return res;
+  return block;
 };
 
 export const BlockClient = {

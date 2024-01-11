@@ -12,6 +12,7 @@ import { Box, Button, Flex, forwardRef } from '@chakra-ui/react';
 
 import EditSideBar from '../../components/EditSideBar';
 import NewBlockPopoverModal from '../../components/NewBlockPopoverModal';
+import { queryClient } from '@components/lib/QueryClient';
 
 function StepEditor() {
   const { quizId, stepId } = useParams<{ quizId: string; stepId: string }>();
@@ -28,9 +29,8 @@ function StepEditor() {
       try {
         const response = await StepClient.getStep({ stepId, quizId });
         const stepData = response.data;
-
         setStep(stepData);
-        console.log('step data', stepData);
+
         return stepData;
       } catch (error) {
         console.error('Error fetching step:', error);

@@ -45,7 +45,6 @@ export class StepService {
         return acc;
       }, {});
 
-      console.log('get step', result[stepId]);
       return result[stepId];
     } catch (error) {
       console.error('Error retrieving step:', error);

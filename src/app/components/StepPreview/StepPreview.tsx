@@ -15,12 +15,11 @@ interface BlockRendererProps {
   isSelected?: boolean;
 }
 
-export const BlockRenderer = ({ block }: BlockRendererProps): JSX.Element => {
+export const BlockRenderer = ({ block, isSelected }: BlockRendererProps): JSX.Element => {
   if (!block) {
     return <></>;
   }
-
-  const BlockComponent = blockLibrary[block?.type].block;
+  const BlockComponent = blockLibrary[block?.type]?.block;
 
   return <BlockComponent {...block.data} />;
 };
@@ -32,7 +31,6 @@ interface StepPreviewProps {
 
 function StepPreview({ step, quizId }: StepPreviewProps) {
   const stepEditorContext = useStepEditorContext();
-  console.log('step in step preview', step);
 
   const blocksRes = useQueries({
     queries:
@@ -40,7 +38,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
         return {
           queryKey: [blockRoute, blockId],
           queryFn: async () => {
-            return (await BlockClient.getBlock({ quizId, blockId, stepId: step.id })).data;
+            return (await BlockClient.getBlock({ blockId, stepId: step.id })).data;
           },
         };
       }) ?? [],
@@ -60,7 +58,7 @@ function StepPreview({ step, quizId }: StepPreviewProps) {
               className={`content-block ${isSelected ? 'content-block-hightlight' : ''}`}
               onClick={() => stepEditorContext?.setSelectedBlockId(block?.id ?? '')}
             >
-              <BlockRenderer block={isSelected ? stepEditorContext?.block : block} isSelected={isSelected} />
+              <BlockRenderer block={isSelected ? stepEditorContext?.selectedBlock : block} isSelected={isSelected} />
               <NewBlockPopoverModal triggerIcon stepId={step?.id} quizId={quizId} />
             </Box>
           );

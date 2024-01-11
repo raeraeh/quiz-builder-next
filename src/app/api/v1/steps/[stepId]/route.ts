@@ -2,8 +2,9 @@ import { Quiz } from '@components/api/QuizClient';
 import { StepService } from '@components/app/services/stepService';
 
 import { NextResponse } from 'next/server';
-import { NewStep } from '../route';
+
 import { objectToArray } from '@components/app/utils/objectToArray';
+import { NewStep } from '../../quizzes/[quizId]/steps/route';
 
 export async function GET(request: Request, { params }: { params: { stepId: string } }) {
   try {
@@ -20,6 +21,8 @@ export async function GET(request: Request, { params }: { params: { stepId: stri
 export async function DELETE(request: Request, { params }: { params: { stepId: string } }) {
   try {
     const stepId = params.stepId;
+
+    console.log('payload in server');
 
     if (!stepId) {
       return new NextResponse('Bad Request: step ID is required', { status: 400 });
