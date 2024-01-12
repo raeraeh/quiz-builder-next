@@ -51,10 +51,6 @@ export function EditSideBar({ step, quizId }: EditSideBarProps) {
           ))}
         </div>
       </Tabs>
-
-      {/* <Button colorScheme="teal" aria-label="save changes" onClick={() => {}}>
-        Save
-      </Button> */}
     </div>
   );
 }

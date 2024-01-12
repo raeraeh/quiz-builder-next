@@ -18,5 +18,6 @@ export const useTabsContext = () => {
 
 export const TabsProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedTab, setSelectedTab] = useState('1');
+
   return <TabsContext.Provider value={{ selectedTab, setSelectedTab }}>{children}</TabsContext.Provider>;
 };

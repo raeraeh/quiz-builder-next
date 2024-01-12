@@ -12,7 +12,7 @@ function DropdownMenu({ children }: DropdownMenuProps) {
   return (
     <Menu>
       <MenuButton as={IconButton} aria-label="options" colorScheme="teal" icon={<HamburgerIcon />}></MenuButton>
-      <MenuList className="menu-list">{children}</MenuList>
+      <MenuList>{children}</MenuList>
     </Menu>
   );
 }

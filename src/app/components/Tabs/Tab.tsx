@@ -19,6 +19,7 @@ const DefaultTab = ({ onChange, id, isSelected, children }: TabComponentProps) =
   const handleClick = (newId: string): void => {
     if (onChange) {
       onChange(newId);
+      console.log('new id', newId);
     }
   };
 
@@ -32,6 +33,7 @@ const DefaultTab = ({ onChange, id, isSelected, children }: TabComponentProps) =
 function Tab({ id, children, TabComponent = DefaultTab }: TabProps) {
   const tabContext = useTabsContext();
   const isSelected = tabContext?.selectedTab === id;
+
   return (
     <TabComponent id={id} isSelected={isSelected} onChange={tabContext?.setSelectedTab}>
       {children}

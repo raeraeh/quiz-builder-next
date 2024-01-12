@@ -2,11 +2,28 @@
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
-import { Button, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Spacer, VStack, useMediaQuery } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spacer,
+  Tab,
+  Tabs,
+  VStack,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import { DeleteIcon, EditIcon, ChevronRightIcon, SmallAddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import QuizClient, { Quiz, quizRoute } from '@components/api/QuizClient';
 import Link from 'next/link';
 import StepClient, { stepRoute } from '@components/api/StepClient';
+import TabContent from './Tabs/TabContent';
+import DataPreview from './DataPreview';
 
 function SideBar() {
   const { data: quizzes } = useQuery({
@@ -23,42 +40,93 @@ function SideBar() {
     QuizClient.createQuiz(newQuiz);
   };
 
+  const tabsData = [
+    {
+      id: '1',
+      title: 'Quizzes',
+      component: () => (
+        <VStack spacing={4} align="stretch">
+          <Button mt={4} variant="outline" borderColor={'teal.500'} onClick={() => generateQuiz()}>
+            + Add a quiz!
+          </Button>
+          {quizzes?.map?.((quiz) => (
+            <QuizSideBarItem key={quiz.id} quiz={quiz} />
+          ))}
+        </VStack>
+      ),
+    },
+    {
+      id: '2',
+      title: 'Steps',
+      component: () => <DataPreview />,
+    },
+  ];
+
   return (
     <>
       <div className="sidebar left-sidebar">
-        <Button variant="outline" borderColor={'teal.500'} onClick={() => generateQuiz()}>
+        <Tabs>
+          <Flex gap={3}>
+            {tabsData.map(({ id, title }) => (
+              <>
+                <Tab key={id} id={id}>
+                  {title}
+                </Tab>
+              </>
+            ))}
+          </Flex>
+          <Divider className="tabs-divider" orientation="horizontal" />
+
+          <div className="tabs-content">
+            {tabsData.map(({ id, component: TabComponent }) => (
+              <>
+                <TabContent key={id} id={id}>
+                  <TabComponent />
+                </TabContent>
+
+                {/* <TabComponent /> */}
+              </>
+            ))}
+          </div>
+        </Tabs>
+        {/* <Button variant="outline" borderColor={'teal.500'} onClick={() => generateQuiz()}>
           + Add a quiz!
         </Button>
         {quizzes?.map?.((quiz) => (
           <QuizSideBarItem key={quiz.id} quiz={quiz} />
-        ))}
+        ))} */}
       </div>
     </>
   );
 }
 
 function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
-  const [isLargerThan1024] = useMediaQuery('(min-width: 1024px)');
+  // const [isLargerThan1024] = useMediaQuery('(min-width: 1024px)');
 
-  const deleteQuiz = (quiz: Quiz) => {
-    QuizClient.deleteQuiz(quiz.id);
+  const deleteQuiz = async (quiz: Quiz) => {
+    try {
+      console.log('id', quiz.id);
+      await QuizClient.deleteQuiz(quiz.id);
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+    }
   };
 
-  const updateQuiz = (quiz: Quiz) => {
-    const newName = prompt('Please enter new name', quiz.name) ?? quiz.name;
-    QuizClient.updateQuiz({
-      ...quiz,
-      name: newName,
-    });
-  };
+  // const updateQuiz = (quiz: Quiz) => {
+  //   const newName = prompt('Please enter new name', quiz.name) ?? quiz.name;
+  //   QuizClient.updateQuiz({
+  //     ...quiz,
+  //     name: newName,
+  //   });
+  // };
 
-  const addStep = (quiz: Quiz) => {
-    const newStep = {
-      quizId: quiz.id,
-      name: 'new step',
-    };
-    StepClient.createStep(newStep);
-  };
+  // const addStep = (quiz: Quiz) => {
+  //   const newStep = {
+  //     quizId: quiz.id,
+  //     name: 'new step',
+  //   };
+  //   StepClient.createStep(newStep);
+  // };
 
   return (
     <VStack align="stretch" spacing={3}>
@@ -67,40 +135,30 @@ function QuizSideBarItem({ quiz }: { quiz: Quiz }) {
           <Link href={`/quizzes/${quiz.id}/`}>{quiz.name}</Link>
         </Button>
         <Spacer />
-        {isLargerThan1024 ? (
-          <Flex minWidth="max-content" alignItems="center" gap="2">
-            <IconButton
-              colorScheme="teal"
-              fontSize="16px"
-              variant="outline"
-              size="sm"
-              onClick={() => deleteQuiz(quiz)}
-              aria-label="delete quiz"
-              icon={<DeleteIcon />}
-            ></IconButton>
 
-            <IconButton aria-label="update quiz" colorScheme="teal" variant="outline" fontSize="16px" size="sm" onClick={() => updateQuiz(quiz)}>
+        <Flex minWidth="max-content" alignItems="center" gap="2">
+          <IconButton
+            colorScheme="teal"
+            fontSize="16px"
+            variant="outline"
+            size="sm"
+            onClick={() => deleteQuiz(quiz)}
+            aria-label="delete quiz"
+            icon={<DeleteIcon />}
+          ></IconButton>
+
+          {/* <IconButton aria-label="update quiz" colorScheme="teal" variant="outline" fontSize="16px" size="sm" onClick={() => updateQuiz(quiz)}>
               <EditIcon />
             </IconButton>
             <Button aria-label="add step" colorScheme="teal" fontSize="16px" size="sm" onClick={() => addStep(quiz)}>
               Add step
-            </Button>
-          </Flex>
-        ) : (
-          <Menu>
-            <MenuButton as={IconButton} size="sm" colorScheme="teal" icon={<ChevronDownIcon />}></MenuButton>
-            <MenuList>
-              <MenuItem onClick={() => deleteQuiz(quiz)}>Delete quiz</MenuItem>
-              <MenuItem onClick={() => updateQuiz(quiz)}>Edit quiz</MenuItem>
-              <MenuItem onClick={() => addStep(quiz)}>Add a step</MenuItem>
-            </MenuList>
-          </Menu>
-        )}
+            </Button> */}
+        </Flex>
       </Flex>
 
-      {quiz.steps.map((stepId: string) => (
+      {/* {quiz.steps.map((stepId: string) => (
         <StepSideBarItem key={stepId} stepId={stepId} quiz={quiz} />
-      ))}
+      ))} */}
     </VStack>
   );
 }
