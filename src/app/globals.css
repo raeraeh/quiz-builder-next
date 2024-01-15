@@ -78,7 +78,7 @@ a {
   }
 }
 
-.sidebar {
+/* .sidebar {
   height: 100vh;
   background: white;
   top: 0;
@@ -86,10 +86,10 @@ a {
   display: flex;
   flex-direction: column;
   color: black;
-  padding: 2em;
+  padding: 1.6em;
   gap: 1em;
 }
 
 .left-sidebar {
   left: 0;
-}
+} */

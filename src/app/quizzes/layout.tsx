@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="section">
       {isMobile ? (
-        <Flex m={2} className="container">
+        <Flex m={2}>
           <DropdownMenu>
             <SideBar />
           </DropdownMenu>

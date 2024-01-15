@@ -53,7 +53,7 @@ export const getStep = async (request: GetStepRequest) => {
 export const deleteStep = async (request: DeleteStepRequest) => {
   const step: Step = await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
 
-  queryClient.invalidateQueries({ queryKey: [quizRoute] });
+  queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
 
   return step;
 };

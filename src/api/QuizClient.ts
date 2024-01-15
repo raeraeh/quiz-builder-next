@@ -42,21 +42,10 @@ export const getQuizzes = async () => {
 export const deleteQuiz = async (id: string) => {
   try {
     console.log('id in client', id);
-    // const res = await api.delete(`/${quizRoute}/${id}`);
-    // console.log('Delete quiz response:', res);
-    const res = await api
-      .delete(`/${quizRoute}/${id}`)
-      .then((response) => {
-        console.log('Successful API call:', response);
-        return response;
-      })
-      .catch((error) => {
-        console.error('Error in API call:', error);
-        throw error;
-      });
+    const res = await api.delete(`/${quizRoute}/${id}`);
 
     queryClient.invalidateQueries({ queryKey: [quizRoute] });
-    return res.data;
+    return res;
   } catch (error) {
     console.error('Error deleting quiz:', error);
     throw error; // Rethrow the error to propagate it to the calling code
