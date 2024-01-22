@@ -4,7 +4,7 @@ CREATE TABLE `blocks` (
 	`position` integer,
 	`type` text,
 	`` text,
-	FOREIGN KEY (`stepId`) REFERENCES `steps`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`stepId`) REFERENCES `steps`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `quizzes` (
@@ -16,5 +16,5 @@ CREATE TABLE `steps` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text,
 	`quizId` text,
-	FOREIGN KEY (`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE no action ON DELETE cascade
 );

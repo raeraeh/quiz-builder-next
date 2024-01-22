@@ -1,8 +1,9 @@
+'use client';
 import { FunctionComponent } from 'react';
 import { useTabsContext } from './TabsContext';
 import { Box, Button } from '@chakra-ui/react';
 
-interface TabProps {
+export interface TabProps {
   id: string;
   TabComponent?: FunctionComponent<TabComponentProps>;
   children?: React.ReactNode;
@@ -32,6 +33,7 @@ const DefaultTab = ({ onChange, id, isSelected, children }: TabComponentProps) =
 function Tab({ id, children, TabComponent = DefaultTab }: TabProps) {
   const tabContext = useTabsContext();
   const isSelected = tabContext?.selectedTab === id;
+
   return (
     <TabComponent id={id} isSelected={isSelected} onChange={tabContext?.setSelectedTab}>
       {children}

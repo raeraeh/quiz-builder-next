@@ -1,6 +1,6 @@
-import { BlockType } from "../../../api/BlockClient";
-import { InputBlock } from "./InputBlock";
-import { TextareaBlock } from "./TextareaBlock";
+import { BlockType } from '../../../api/BlockClient';
+import { InputBlock } from './InputBlock';
+import { TextareaBlock } from './TextareaBlock';
 
 export interface BlockDefinition {
   inserterOptions: {
@@ -14,27 +14,27 @@ export interface BlockDefinition {
 
 const InputBlockDefinition: BlockDefinition = {
   inserterOptions: {
-    label: "Input",
+    label: 'Input',
   },
 
   block: InputBlock,
 
   factory: () => ({
-    fieldName: "helo",
-    label: "label text",
-    placeholder: "placeholder text",
+    fieldName: 'helo',
+    label: 'label text',
+    placeholder: 'placeholder text',
   }),
 };
 
 const TextareaBlockDefinition: BlockDefinition = {
   inserterOptions: {
-    label: "Textarea",
+    label: 'Textarea',
   },
 
   block: TextareaBlock,
 
   factory: () => ({
-    placeholder: "placeholder text",
+    placeholder: 'placeholder text',
   }),
 };
 
