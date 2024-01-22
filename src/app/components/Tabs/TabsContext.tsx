@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useState } from 'react';
 
 interface TabsContextData {
@@ -10,7 +12,6 @@ const TabsContext = createContext<TabsContextData | null>(null);
 export const useTabsContext = () => {
   const tabsContext = useContext(TabsContext);
   if (tabsContext === undefined) {
-    console.log('error running');
     throw new Error('useTabsContext must be used within a TabsProvider');
   }
   return tabsContext;

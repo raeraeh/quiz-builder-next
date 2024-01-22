@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  VStack,
   forwardRef,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
@@ -21,7 +22,7 @@ interface NewBlockPopoverProps {
   quizId: string;
   stepId: string;
   triggerIcon?: boolean;
-  btnText: string;
+  btnText?: string;
 }
 
 function NewBlockPopoverModal({ title, quizId, stepId, triggerIcon, btnText }: NewBlockPopoverProps) {
@@ -71,7 +72,7 @@ function NewBlockPopoverModal({ title, quizId, stepId, triggerIcon, btnText }: N
         ) : (
           <Button colorScheme="teal" aria-label="add block">
             {' '}
-            Add Block
+            {btnText}
           </Button>
         )}
       </PopoverTrigger>

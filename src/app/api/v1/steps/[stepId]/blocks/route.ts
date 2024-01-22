@@ -17,7 +17,6 @@ export async function POST(request: Request, { params }: { params: { stepId: str
     }
 
     const blockData: NewBlock = await request.json();
-    console.log('request', blockData);
 
     const newBlock = BlockService.createBlock(blockData);
 

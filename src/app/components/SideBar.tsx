@@ -1,27 +1,44 @@
 'use client';
 
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQueries, useQuery } from '@tanstack/react-query';
 
-import { Box, Button, Divider, Flex, IconButton, Spacer, VStack } from '@chakra-ui/react';
+import { Button, Flex, IconButton, Spacer, TabsProvider, VStack } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import QuizClient, { Quiz, quizRoute } from '@components/api/QuizClient';
 import Link from 'next/link';
 import StepClient, { stepRoute } from '@components/api/StepClient';
-import TabContent from './Tabs/TabContent';
+
 import Tabs from './Tabs/Tabs';
-import Tab from './Tabs/Tab';
+
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 
 function SideBar() {
-  const { data: quizzes } = useQuery({
-    queryKey: [quizRoute],
-    queryFn: async () => {
-      return (await QuizClient.getQuizzes()).data;
-    },
-    placeholderData: keepPreviousData,
+  const { quizId } = useParams();
+  const [selectedQuizId, setSelectedQuizId] = useState((quizId as string) ?? '');
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: [quizRoute],
+        queryFn: async () => {
+          return await QuizClient.getQuizzes();
+        },
+        placeholderData: keepPreviousData,
+      },
+      {
+        queryKey: [quizRoute, selectedQuizId],
+        queryFn: async () => {
+          const data = await QuizClient.getQuiz(selectedQuizId);
+
+          return data;
+        },
+        placeholderData: keepPreviousData,
+        enabled: !!selectedQuizId,
+      },
+    ],
   });
 
-  const [selectedQuiz, setSelectedQuiz] = useState(quizzes?.[0]);
+  const [{ data: quizzes }, { data: selectedQuiz }] = results;
 
   const generateQuiz = () => {
     const newQuiz = { name: 'new quiz' };
@@ -29,6 +46,13 @@ function SideBar() {
     QuizClient.createQuiz(newQuiz);
   };
 
+  const generateStep = () => {
+    if (!selectedQuizId) {
+      return;
+    }
+    const newStep = { quizId: selectedQuizId, name: 'new step' };
+    StepClient.createStep(newStep);
+  };
   const tabsData = [
     {
       id: '1',
@@ -36,61 +60,46 @@ function SideBar() {
       component: () => (
         <VStack spacing={3} align="stretch">
           <Button size="sm" variant="outline" borderColor={'teal.500'} onClick={() => generateQuiz()}>
-            + Add a quiz!
+            + Add a quiz
           </Button>
 
           {quizzes?.map?.((quiz) => (
-            <QuizSideBarItem key={quiz.id} quiz={quiz} setSelectedQuiz={setSelectedQuiz} />
+            <QuizSideBarItem key={quiz.id} quiz={quiz} setSelectedQuizId={setSelectedQuizId} />
           ))}
         </VStack>
       ),
     },
-    {
-      id: '2',
-      title: 'Steps',
-      component: () => (
-        <VStack spacing={4} align="stretch">
-          {selectedQuiz?.steps.length === 0 || !selectedQuiz ? (
-            <Box>Selected quiz has no steps</Box>
-          ) : (
-            selectedQuiz?.steps.map((stepId: string) => <StepSideBarItem key={stepId} stepId={stepId} quiz={selectedQuiz} />)
-          )}
-        </VStack>
-      ),
-    },
+    ...(selectedQuizId
+      ? [
+          {
+            id: '2',
+            title: 'Steps',
+            component: () => (
+              <VStack spacing={4} align="stretch">
+                <Button size="sm" variant="outline" borderColor={'teal.500'} onClick={() => generateStep()}>
+                  + Add a step
+                </Button>
+
+                {selectedQuiz?.steps?.map((stepId: string) => (
+                  <StepSideBarItem key={stepId} stepId={stepId} quizId={selectedQuizId} />
+                ))}
+              </VStack>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
     <>
       <div className="sidebar left-sidebar">
-        <Tabs>
-          <Flex gap={3}>
-            {tabsData.map(({ id, title }) => (
-              <>
-                <Tab key={id} id={id}>
-                  {title}
-                </Tab>
-              </>
-            ))}
-          </Flex>
-          <Divider className="tabs-divider" orientation="horizontal" />
-
-          <div className="tabs-content">
-            {tabsData.map(({ id, component: TabComponent }) => (
-              <>
-                <TabContent key={id} id={id}>
-                  <TabComponent />
-                </TabContent>
-              </>
-            ))}
-          </div>
-        </Tabs>
+        <Tabs tabsData={tabsData} />
       </div>
     </>
   );
 }
 
-function QuizSideBarItem({ quiz, setSelectedQuiz }: { quiz: Quiz; setSelectedQuiz: React.Dispatch<React.SetStateAction<Quiz | undefined>> }) {
+function QuizSideBarItem({ quiz, setSelectedQuizId }: { quiz: Quiz; setSelectedQuizId: React.Dispatch<React.SetStateAction<string>> }) {
   const deleteQuiz = async (quiz: Quiz) => {
     try {
       await QuizClient.deleteQuiz(quiz.id);
@@ -99,13 +108,13 @@ function QuizSideBarItem({ quiz, setSelectedQuiz }: { quiz: Quiz; setSelectedQui
     }
   };
 
-  const handleQuizSelection = () => {
-    return setSelectedQuiz(quiz);
+  const handleQuizSelection = (quizId: string) => {
+    return setSelectedQuizId(quizId);
   };
   return (
     <Flex>
       <Button pr={2} colorScheme="teal" variant="link">
-        <Link href={`/quizzes/${quiz.id}/`} onClick={() => handleQuizSelection()}>
+        <Link href={`/quizzes/${quiz.id}/`} onClick={() => handleQuizSelection(quiz.id)}>
           {quiz.name}
         </Link>
       </Button>
@@ -126,16 +135,14 @@ function QuizSideBarItem({ quiz, setSelectedQuiz }: { quiz: Quiz; setSelectedQui
   );
 }
 
-function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
-  const { data: step, refetch: refetchStep } = useQuery({
+function StepSideBarItem({ stepId, quizId }: { stepId: string; quizId: string }) {
+  const { data: step } = useQuery({
     queryKey: [stepRoute, stepId],
     queryFn: async () => {
-      return (
-        await StepClient.getStep({
-          quizId: quiz.id,
-          stepId,
-        })
-      ).data;
+      return await StepClient.getStep({
+        quizId,
+        stepId,
+      });
     },
   });
 
@@ -145,8 +152,6 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
         quizId,
         stepId,
       });
-
-      refetchStep();
     } catch (error) {
       console.error('Error deleting step:', error);
     }
@@ -155,7 +160,7 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
   return (
     <div>
       <Flex align="center">
-        <Link href={`/quizzes/${quiz.id}/steps/${stepId}`}> {step?.name}</Link>
+        <Link href={`/quizzes/${quizId}/steps/${stepId}`}> {step?.name}</Link>
         <Spacer />
         <IconButton
           colorScheme="teal"
@@ -163,7 +168,7 @@ function StepSideBarItem({ stepId, quiz }: { stepId: string; quiz: Quiz }) {
           variant="outline"
           size="sm"
           aria-label="delete step"
-          onClick={() => deleteStep(quiz.id, stepId)}
+          onClick={() => deleteStep(quizId, stepId)}
           icon={<DeleteIcon />}
         />
       </Flex>

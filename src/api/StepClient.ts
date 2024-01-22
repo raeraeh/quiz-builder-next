@@ -20,6 +20,11 @@ interface GetStepRequest {
   quizId: string;
 }
 
+export interface CreateStepRequest {
+  quizId: string;
+  name: string;
+}
+
 interface DeleteStepRequest {
   stepId: string;
   quizId: string;
@@ -27,23 +32,19 @@ interface DeleteStepRequest {
 
 export const stepRoute = 'steps';
 
-export interface CreateStepRequest {
-  quizId: string;
-  name: string;
-}
-
 export const createStep = async (request: CreateStepRequest) => {
-  console.log('client request', request);
-  const step: Step = await api.post(`${quizRoute}/${request.quizId}/${stepRoute}`, request);
+  const step = (await api.post<Step>(`${quizRoute}/${request.quizId}/${stepRoute}`, request)).data;
   queryClient.invalidateQueries({ queryKey: [stepRoute] });
+  queryClient.invalidateQueries({ queryKey: [quizRoute, request.quizId] });
 
   return step;
 };
 
 export const getStep = async (request: GetStepRequest) => {
   try {
-    const res = await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
-    return res;
+    const step = (await api.get<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`)).data;
+
+    return step;
   } catch (error) {
     console.error('Error retrieving step:', error);
     throw error;
@@ -51,19 +52,20 @@ export const getStep = async (request: GetStepRequest) => {
 };
 
 export const deleteStep = async (request: DeleteStepRequest) => {
-  const step: Step = await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
+  await api.delete(`${quizRoute}/${request.quizId}/${stepRoute}/${request.stepId}`);
 
   queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
+  queryClient.invalidateQueries({ queryKey: [quizRoute, request.quizId] });
 
-  return step;
+  return;
 };
 
 export const updateStep = async (request: UpdateStepRequest) => {
-  const step: Step = await api.update<UpdateStepRequest, Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.id}`, request);
+  const step = (await api.update<Step>(`${quizRoute}/${request.quizId}/${stepRoute}/${request.id}`, request)).data;
 
   queryClient.invalidateQueries({ queryKey: [quizRoute] });
 
-  queryClient.invalidateQueries({ queryKey: [stepRoute] });
+  queryClient.invalidateQueries({ queryKey: [stepRoute, request.id] });
 
   return step;
 };

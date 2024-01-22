@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery } from '@tanstack/react-query';
 import { createContext, useContext, useState } from 'react';
 import { Block, blockRoute, BlockClient } from '../../../api/BlockClient';
@@ -34,8 +36,8 @@ export const StepEditorProvider = ({ children, stepId }: { children: JSX.Element
         stepId,
       });
 
-      setSelectedBlock(block.data);
-      return block.data;
+      setSelectedBlock(block);
+      return block;
     },
     enabled: !!selectedBlockId,
   });

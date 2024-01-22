@@ -2,14 +2,14 @@ import { Quiz } from '@components/api/QuizClient';
 import { StepService } from '@components/app/services/stepService';
 
 import { NextResponse } from 'next/server';
-import { NewStep } from '../route';
+
 import { objectToArray } from '@components/app/utils/objectToArray';
 
 export async function GET(request: Request, { params }: { params: { stepId: string } }) {
   try {
     const result = await StepService.getStep(params.stepId);
     // const resultArray = objectToArray(result);
-    // console.log('step get api result', resultArray);
+    //
     return new NextResponse(JSON.stringify(result));
   } catch (error) {
     console.error('Error retrieving step:', error);
@@ -36,9 +36,9 @@ export async function DELETE(request: Request, { params }: { params: { stepId: s
 
 export async function PUT(request: Request, { params }: { params: { stepId: string } }) {
   try {
-    const stepData: NewStep = await request.json();
-    console.log('request', stepData);
-
+    console.log('hi');
+    const stepData = await request.json();
+    console.log(stepData);
     const result = StepService.updateStep(stepData, params.stepId);
 
     return new NextResponse(JSON.stringify(result), {

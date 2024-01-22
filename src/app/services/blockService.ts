@@ -6,10 +6,9 @@ import { NewBlock } from '../api/v1/steps/[stepId]/blocks/route';
 export class BlockService {
   static async createBlock(blockData: NewBlock) {
     try {
-      console.log('blockservice', blockData);
       const newBlock = await db
         .insert(blocks)
-        .values({ ...blockData })
+        .values({ stepId: blockData.stepId, position: blockData.position, data: blockData.data, type: blockData.type })
         .returning();
       return newBlock;
     } catch (error) {
@@ -37,7 +36,7 @@ export class BlockService {
     try {
       const updateBlock = await db
         .update(blocks)
-        .set({ ...blockData })
+        .set({ stepId: blockData.stepId, position: blockData.position, data: blockData.data, type: blockData.type })
         .where(eq(blocks.id, blockId));
 
       return updateBlock;

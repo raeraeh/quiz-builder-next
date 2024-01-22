@@ -23,7 +23,7 @@ export const createQuiz = async (request: CreateQuizRequest) => {
   const data = {
     name: request.name,
   };
-  const res = await api.post<CreateQuizRequest, Quiz>(`/${quizRoute}`, data);
+  const res = (await api.post<Quiz>(`/${quizRoute}`, data)).data;
 
   queryClient.invalidateQueries({ queryKey: [quizRoute] });
 
@@ -31,18 +31,18 @@ export const createQuiz = async (request: CreateQuizRequest) => {
 };
 
 export const getQuiz = async (id: string) => {
-  const res = await api.get<Quiz>(`/${quizRoute}/${id}`);
+  const res = (await api.get<Quiz>(`/${quizRoute}/${id}`)).data;
   return res;
 };
 
 export const getQuizzes = async () => {
-  return await api.get_all<Quiz>(`/${quizRoute}`);
+  const res = (await api.get_all<Quiz>(`/${quizRoute}`)).data;
+  return res;
 };
 
 export const deleteQuiz = async (id: string) => {
   try {
-    console.log('id in client', id);
-    const res = await api.delete(`/${quizRoute}/${id}`);
+    const res = (await api.delete(`/${quizRoute}/${id}`)).data;
 
     queryClient.invalidateQueries({ queryKey: [quizRoute] });
     return res;
@@ -52,9 +52,9 @@ export const deleteQuiz = async (id: string) => {
   }
 };
 
-export const updateQuiz = async (request: UpdateQuizRequest) => {
+export const updateQuiz = async (request: UpdateQuizRequest): Promise<Quiz> => {
   try {
-    const res = await api.update<UpdateQuizRequest, Quiz>(`/${quizRoute}/${request.id}`, request);
+    const res: Quiz = (await api.update<UpdateQuizRequest>(`/${quizRoute}/${request.id}`, request)).data;
 
     queryClient.invalidateQueries({ queryKey: [quizRoute] });
 

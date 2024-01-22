@@ -32,13 +32,17 @@ export const createBlock = async (request: CreateBlockRequest) => {
     type: request.type,
     data: request.data ?? {},
   };
-  console.log('client', data);
 
-  const block: Block = await api.post(`${stepRoute}/${request.stepId}/${blockRoute}`, data);
+  try {
+    const block = (await api.post<Block>(`${stepRoute}/${request.stepId}/${blockRoute}`, data)).data;
 
-  queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
+    queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
 
-  return block;
+    return block;
+  } catch (error) {
+    console.error('Error retrieving block:', error);
+    throw error;
+  }
 };
 
 // Get
@@ -48,8 +52,13 @@ export interface GetBlockRequest {
 }
 
 export const getBlock = async (request: GetBlockRequest) => {
-  const block = await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
-  return block;
+  try {
+    const block = (await api.get<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`)).data;
+    return block;
+  } catch (error) {
+    console.error('Error retrieving block:', error);
+    throw error;
+  }
 };
 
 export interface UpdateBlockRequest extends Block {
@@ -59,7 +68,7 @@ export interface UpdateBlockRequest extends Block {
 }
 
 export const updateBlock = async (request: UpdateBlockRequest) => {
-  const block = await api.update<UpdateBlockRequest, Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.id}`, request);
+  const block = (await api.update<Block>(`${stepRoute}/${request.stepId}/${blockRoute}/${request.id}`, request)).data;
 
   queryClient.invalidateQueries({ queryKey: [blockRoute, block.id] });
 
@@ -73,12 +82,12 @@ export interface DeleteBlockRequest {
 }
 
 export const deleteBlock = async (request: DeleteBlockRequest) => {
-  const block: Block = await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
+  const block = await api.delete(`${stepRoute}/${request.stepId}/${blockRoute}/${request.blockId}`);
 
   if (!block) throw new Error('Step not found');
 
   queryClient.invalidateQueries({ queryKey: [stepRoute, request.stepId] });
-  queryClient.invalidateQueries({ queryKey: [blockRoute, block.id] });
+  queryClient.invalidateQueries({ queryKey: [blockRoute, request.blockId] });
 
   return block;
 };

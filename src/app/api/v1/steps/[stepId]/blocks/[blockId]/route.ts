@@ -16,7 +16,6 @@ export async function GET(request: NextRequest, { params }: { params: { blockId:
 export async function PUT(request: Request, { params }: { params: { blockId: string } }) {
   try {
     const blockData: NewBlock = await request.json();
-    console.log('request', blockData);
 
     const result = BlockService.updateBlock(blockData, params.blockId);
 

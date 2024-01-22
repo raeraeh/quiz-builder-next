@@ -18,15 +18,42 @@ export class QuizService {
   static async getQuiz(data: string) {
     try {
       const quizId = data;
-
-      const rows = await db.select().from(quizzes).where(eq(quizzes.id, quizId));
+      const rows = db
+        .select({
+          quizzes: quizzes,
+          steps: steps,
+        })
+        .from(quizzes)
+        .leftJoin(steps, eq(quizzes.id, steps.quizId))
+        .all();
 
       if (rows.length === 0) {
-        throw new Error('Quiz does not exist');
+        return null; // Quiz not found
       }
-      return rows[0];
+
+      const result = rows.reduce<Record<string, Quiz>>((acc, row) => {
+        const quiz = row.quizzes;
+        const step = row.steps;
+
+        const existingEntry = acc[quiz.id];
+
+        if (!existingEntry) {
+          const newQuiz: Quiz = {
+            id: quiz.id,
+            name: quiz.name ?? '',
+            steps: [],
+          };
+          acc[quiz.id] = newQuiz;
+        }
+        if (step && step.id) {
+          acc[quiz.id]?.steps?.push(step.id);
+        }
+        return acc;
+      }, {});
+
+      return result[quizId];
     } catch (error) {
-      console.error('Error retrieving quiz:', error);
+      console.error('Error retrieving quizzes:', error);
       throw error;
     }
   }

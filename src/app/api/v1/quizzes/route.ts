@@ -11,8 +11,8 @@ export async function GET(request: Request) {
     // const resultArray: QuizWithoutSteps[] = (objectToArray(result) as Quiz[]).map(({ id, name }) => ({ id, name }));
     const resultArray = objectToArray(result);
 
-    // console.log('result', newArray);
-    console.log('quiz result', resultArray);
+    //
+
     return new NextResponse(JSON.stringify(resultArray));
   } catch (error) {
     console.error('Error retrieving quizzes:', error);
@@ -23,7 +23,6 @@ export async function GET(request: Request) {
 export async function POST(request: Request, response: Response) {
   try {
     // Log the request information to the server console
-    console.log('Received POST request:', request);
 
     // Parse the request body as JSON
     const requestData = await request.json();
@@ -32,7 +31,6 @@ export async function POST(request: Request, response: Response) {
     const newQuiz = await QuizService.createQuiz(requestData.name);
 
     // Log the newly created quiz
-    console.log('Created quiz:', newQuiz);
 
     return new NextResponse(JSON.stringify(newQuiz), {
       status: 201,

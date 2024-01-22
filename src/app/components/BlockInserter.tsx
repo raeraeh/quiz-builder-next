@@ -1,6 +1,6 @@
 import { BlockClient, BlockType } from '../../api/BlockClient';
 import { blockLibrary } from './blocks/BlockLibrary';
-import { Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex } from '@chakra-ui/react';
 
 interface BlockInserterProps {
   // position: number;
@@ -22,10 +22,10 @@ export const BlockInserter = ({ stepId, quizId }: BlockInserterProps) => {
   };
 
   return (
-    <Flex justify="space-around" p={2} gap={2}>
+    <Flex flexDirection="column" alignItems="flex-start">
       {Object.keys(blockLibrary).map((block) => {
         return (
-          <Button key={block} aria-label={`select ${block} block`} onClick={() => addBlock(block as BlockType)}>
+          <Button variant="link" key={block} aria-label={`select ${block} block`} onClick={() => addBlock(block as BlockType)}>
             {blockLibrary[block as BlockType].inserterOptions.label}
           </Button>
         );

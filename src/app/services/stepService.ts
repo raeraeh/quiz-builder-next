@@ -19,7 +19,7 @@ export class StepService {
     try {
       const stepId = data;
 
-      const rows = await db.select({ steps: steps, blocks: blocks }).from(steps).leftJoin(blocks, eq(steps.id, stepId));
+      const rows = await db.select().from(steps).leftJoin(blocks, eq(steps.id, blocks.stepId));
 
       if (rows.length === 0) {
         throw new Error('Step does not exist');
@@ -67,7 +67,9 @@ export class StepService {
     try {
       const updateStep = await db
         .update(steps)
-        .set({ ...stepData })
+        .set({
+          name: stepData.name,
+        })
         .where(eq(steps.id, stepId));
 
       return updateStep;
